@@ -1,9 +1,12 @@
 import { Hono } from "hono";
+import webRoutes from "./web/routes";
+import apiRoutesV1 from "./api/routes/v1";
 
 const app = new Hono<{ Bindings: CloudflareBindings }>();
 
-app.get("/message", (c) => {
-  return c.text("Hello Hono!");
-});
+app.route("/", webRoutes);
+app.route("/api", apiRoutesV1);
 
-export default app;
+export default {
+    fetch: app.fetch,
+};
