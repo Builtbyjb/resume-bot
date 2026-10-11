@@ -1,7 +1,7 @@
 import { html } from "hono/html";
 import { css } from "hono/css";
 import Layout from "./layout";
-import { btn, btnPrimary, card, wrap, form } from "../styles/style";
+import { btn, btnPrimary, card, wrap, form } from "../style";
 
 export default function LoginPage() {
     const h1Style = css`

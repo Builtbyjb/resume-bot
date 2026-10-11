@@ -9,7 +9,7 @@ import {
     section,
     grid,
     card,
-} from "../styles/style";
+} from "../style";
 
 const features = [
     {

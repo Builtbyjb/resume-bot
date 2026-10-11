@@ -1,6 +1,6 @@
 import { html } from "hono/html";
 import { css, Style } from "hono/css";
-import { globalStyle, header, container, nav, footer } from "../styles/style";
+import { globalStyle, header, container, nav, footer } from "../style";
 import { HtmlEscapedString } from "hono/utils/html";
 
 type LayoutProps = {
