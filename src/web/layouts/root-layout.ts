@@ -1,6 +1,6 @@
 import { html } from "hono/html";
-import { css, Style } from "hono/css";
-import { globalStyle, header, container, nav, footer } from "../style";
+import { Style } from "hono/css";
+import { globalStyle } from "../style";
 import { HtmlEscapedString } from "hono/utils/html";
 
 type LayoutProps = {
@@ -9,13 +9,7 @@ type LayoutProps = {
     content: HtmlEscapedString | Promise<HtmlEscapedString>;
 };
 
-export default function Layout(props: LayoutProps) {
-    const logo = css`
-        font-family: "Space Mono";
-        font-style: italic;
-        font-weight: 700;
-    `;
-
+export default function RootLayout(props: LayoutProps) {
     return html`
         <!doctype html>
         <html lang="en">
@@ -42,21 +36,8 @@ export default function Layout(props: LayoutProps) {
                 ${Style()}
             </head>
             <body class="${globalStyle}">
-                <header class="${header}">
-                    <nav class="${container} ${nav}">
-                        <a href="/">
-                            <div>
-                                <p class=${logo}>JobBot</p>
-                            </div>
-                        </a>
-                    </nav>
-                </header>
-                <main>${props.content}</main>
-                <footer class="${footer}">
-                    <div class="${container}">
-                        &copy; ${new Date().getFullYear()} ACorp
-                    </div>
-                </footer>
+                ${props.content}
+                <script src="/script.js" type="module"></script>
             </body>
         </html>
     `;

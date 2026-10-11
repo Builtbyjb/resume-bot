@@ -1,5 +1,4 @@
 import { html } from "hono/html";
-import Layout from "./layout";
 import {
     hero,
     container,
@@ -10,6 +9,7 @@ import {
     grid,
     card,
 } from "../style";
+import GuestLayout from "../layouts/guest-layout";
 
 const features = [
     {
@@ -27,7 +27,7 @@ const features = [
 ];
 
 export default function LandingPage() {
-    return Layout({
+    return GuestLayout({
         title: "Resume Bot",
         description: "Automatic resume application using AI",
         content: html`

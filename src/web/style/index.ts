@@ -65,6 +65,7 @@ export const btn = css`
     cursor: pointer;
     color: var(--text);
     background: transparent;
+    font-family: "Space Mono", "Monospace";
     transition:
         transform 0.15s,
         border-color 0.15s,
@@ -76,13 +77,13 @@ export const btn = css`
 `;
 
 export const btnPrimary = css`
-    color: #333;
+    color: #fff;
     cursor: pointer;
-    background: #e6e8ee;
+    background: var(--accent);
+    border: none;
 `;
 
 export const card = css`
-    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 1.75rem;
@@ -122,6 +123,7 @@ export const hero = css`
     }
     h1 em {
         font-family: "Space Mono", monospace;
+        color: var(--accent);
     }
     p {
         color: var(--muted);

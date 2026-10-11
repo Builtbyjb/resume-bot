@@ -1,7 +1,7 @@
 import { html } from "hono/html";
 import { css } from "hono/css";
-import Layout from "./layout";
 import { btn, btnPrimary, card, wrap, form } from "../style";
+import GuestLayout from "../layouts/guest-layout";
 
 export default function LoginPage() {
     const h1Style = css`
@@ -9,12 +9,12 @@ export default function LoginPage() {
         font-style: italic;
     `;
 
-    return Layout({
-        title: "Sign in - Resume Bot",
-        description: "Sign in to Resume Bot",
+    return GuestLayout({
+        title: "Sign in - Job Bot",
+        description: "Sign in to Job Bot",
         content: html`
             <div class="${wrap}">
-                <form method="post" action="/login" class="${card} ${form}">
+                <form id="login-form" class="${card} ${form}">
                     <h1 class=${h1Style}>Welcome back</h1>
                     <label>
                         Email
@@ -25,7 +25,7 @@ export default function LoginPage() {
                         <input type="password" name="password" required />
                     </label>
                     <button type="submit" class="${btn} ${btnPrimary}">
-                        Sign in
+                        Sign In
                     </button>
                 </form>
             </div>
