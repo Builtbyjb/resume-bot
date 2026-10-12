@@ -166,7 +166,7 @@ export const grid = css`
 export const wrap = css`
     display: flex;
     justify-content: center;
-    padding: 5rem 1.5rem;
+    padding: 5rem 2rem 1.5rem;
 `;
 
 export const form = css`

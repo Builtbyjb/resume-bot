@@ -1,6 +1,8 @@
 import { Hono } from "hono";
 import LandingPage from "../pages/landing";
-import LoginPage from "../pages/login";
+import SigninPage from "../pages/signin";
+import { html } from "hono/html";
+import { authMiddleware } from "@/api/middleware/auth";
 
 const webRoutes = new Hono();
 
@@ -8,8 +10,12 @@ webRoutes.get("/", (c) => {
     return c.html(LandingPage());
 });
 
-webRoutes.get("/login", (c) => {
-    return c.html(LoginPage());
+webRoutes.get("/signin", (c) => {
+    return c.html(SigninPage());
+});
+
+webRoutes.get("/jobs", authMiddleware(), (c) => {
+    return c.html(html`<h1>Jobs</h1>`);
 });
 
 export default webRoutes;

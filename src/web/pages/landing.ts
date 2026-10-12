@@ -1,14 +1,5 @@
 import { html } from "hono/html";
-import {
-    hero,
-    container,
-    actions,
-    btn,
-    btnPrimary,
-    section,
-    grid,
-    card,
-} from "../style";
+import { hero, container, actions, btn, btnPrimary, section, grid, card } from "../style";
 import GuestLayout from "../layouts/guest-layout";
 
 const features = [
@@ -35,13 +26,11 @@ export default function LandingPage() {
                 <div class="${container}">
                     <h1>Land your next job on <em>autopilot</em></h1>
                     <p>
-                        An AI assistant that finds jobs, writes tailored resumes
-                        and submits applications for you.
+                        An AI assistant that finds jobs, writes tailored resumes and submits
+                        applications for you.
                     </p>
                     <div class="${actions}">
-                        <a href="/login" class="${btn} ${btnPrimary}">
-                            Sign In
-                        </a>
+                        <a href="/signin" class="${btn} ${btnPrimary}"> Sign In </a>
                     </div>
                 </div>
             </section>
