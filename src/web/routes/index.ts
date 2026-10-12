@@ -14,8 +14,15 @@ webRoutes.get("/signin", (c) => {
     return c.html(SigninPage());
 });
 
-webRoutes.get("/jobs", authMiddleware(), (c) => {
-    return c.html(html`<h1>Jobs</h1>`);
-});
+webRoutes.get(
+    "/jobs",
+    authMiddleware({
+        redirectTo: "/signin",
+        alert: "Your session has expired. You have been signed out. Please sign in again to continue.",
+    }),
+    (c) => {
+        return c.html(html`<h1>Jobs</h1>`);
+    },
+);
 
 export default webRoutes;

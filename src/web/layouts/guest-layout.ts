@@ -2,7 +2,7 @@ import { html } from "hono/html";
 import { HtmlEscapedString } from "hono/utils/html";
 import { css } from "hono/css";
 import RootLayout from "./root-layout";
-import { globalStyle, header, container, nav, footer } from "../style";
+import { header, container, nav, footer } from "../style";
 
 type Props = {
     title: string;
@@ -33,7 +33,7 @@ export default function GuestLayout(props: Props) {
             <main>${props.content}</main>
             <footer class="${footer}">
                 <div class="${container}">
-                    &copy; ${new Date().getFullYear()} ACorp
+                    &copy; ${new Date().getFullYear()} ACorp. All rights reserved.
                 </div>
             </footer>
         `,

@@ -3,12 +3,11 @@ import type { Context } from "hono";
 import {
     generateOTP,
     sendOTPEmail,
-    signToken,
+    signJWTToken,
     getTempTokenExp,
     getAccessTokenExp,
     getRefreshTokenExp,
-    getTokenFromHeader,
-    decodeToken,
+    verifyJWTToken,
 } from "@/api/helpers";
 import { BaseTokenPayload, TokenPayload } from "@/api/lib/types";
 import { AuthContext } from "./middleware";
@@ -40,7 +39,7 @@ export class AuthService {
         } as TokenPayload;
 
         // Sign temp token payload
-        const signResult = await signToken(c.env.JWT_SECRET, payload);
+        const signResult = await signJWTToken(c.env.JWT_SECRET, payload);
 
         return signResult;
     }
@@ -52,15 +51,15 @@ export class AuthService {
         const tempToken = getCookie(c, "temp_token");
         if (!tempToken) return new Error("Not Authorized");
 
-        const decodedPayload = await decodeToken(c.env.JWT_SECRET, tempToken);
-        if (decodedPayload instanceof Error) throw decodedPayload;
+        const verifiedPayload = await verifyJWTToken(c.env.JWT_SECRET, tempToken);
+        if (verifiedPayload instanceof Error) throw verifiedPayload;
 
-        if (!decodedPayload.otp) return new Error("OTP not found");
-        if (decodedPayload.otp !== otp) return new Error("Invalid OTP");
+        if (!verifiedPayload.otp) return new Error("OTP not found");
+        if (verifiedPayload.otp !== otp) return new Error("Invalid OTP");
 
         const basePayload = {
-            userID: decodedPayload.userID,
-            email: decodedPayload.email,
+            userID: verifiedPayload.userID,
+            email: verifiedPayload.email,
         } as BaseTokenPayload;
 
         const accessPayload = {
@@ -69,7 +68,7 @@ export class AuthService {
         } as TokenPayload;
 
         // Generate access token
-        const accessToken = await signToken(c.env.JWT_SECRET, accessPayload);
+        const accessToken = await signJWTToken(c.env.JWT_SECRET, accessPayload);
 
         const refreshPayload = {
             ...basePayload,
@@ -77,11 +76,21 @@ export class AuthService {
         };
 
         // Generate refresh token
-        const refreshToken = await signToken(c.env.JWT_SECRET, refreshPayload);
+        const refreshToken = await signJWTToken(c.env.JWT_SECRET, refreshPayload);
 
         // Store refresh token in KV store
-        await c.env.KV.put(`${decodedPayload.userID}:refresh_token`, refreshToken);
+        await c.env.KV.put(`${verifiedPayload.userID}:refresh_token`, refreshToken);
 
-        return { accessToken, email: decodedPayload.email };
+        return { accessToken, email: verifiedPayload.email };
+    }
+
+    public async signout(c: Context<AuthContext>) {
+        const accessToken = getCookie(c, "access_token");
+        if (!accessToken) throw new Error("Not authorized");
+
+        const verifiedPayload = await verifyJWTToken(c.env.JWT_SECRET, accessToken);
+        if (verifiedPayload instanceof Error) throw verifiedPayload;
+
+        await c.env.KV.delete(`${verifiedPayload.userID}:refresh_token`);
     }
 }

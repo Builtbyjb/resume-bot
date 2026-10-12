@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { loginSchema, otpSchema } from "@/api/zod-schema";
-import { setCookie } from "hono/cookie";
+import { deleteCookie, setCookie } from "hono/cookie";
 import { AuthContext, injectService } from "./middleware";
 import { TEMP_TOKEN_MAX_AGE, ACCESS_TOKEN_MAX_AGE } from "@/api/helpers";
 
@@ -47,8 +47,13 @@ authRouteV1.post("/otp", zValidator("json", otpSchema), async (c) => {
     return c.json({ message: "success", userData: { email: result.email } }, 200);
 });
 
-authRouteV1.post("signout", (c) => {
-    return c.json({ message: "success" }, 200);
+authRouteV1.post("signout", async (c) => {
+    const authService = c.get("service");
+    await authService.signout(c);
+
+    deleteCookie(c, "access_token");
+
+    return c.json({ message: "Signed out successfully" }, 200);
 });
 
 export default authRouteV1;

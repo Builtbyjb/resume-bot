@@ -1,5 +1,4 @@
-import { ENV, TokenPayload } from "../lib/types";
-import type { Context } from "hono";
+import { TokenPayload } from "../lib/types";
 import { otpTemplate } from "../templates/utils";
 import { verify, sign } from "hono/jwt";
 
@@ -59,7 +58,7 @@ export function getRefreshTokenExp() {
     return Math.floor(Date.now() / 1000) + REFRESH_TOKEN_MAX_AGE;
 }
 
-export async function signToken(secret: string, payload: TokenPayload): Promise<string> {
+export async function signJWTToken(secret: string, payload: TokenPayload): Promise<string> {
     return await sign(payload, secret);
 }
 
@@ -68,7 +67,7 @@ export function getTokenFromHeader(authHeader: string): string {
     return authHeader.slice(authHeaderPrefix.length);
 }
 
-export async function decodeToken(secret: string, token: string): Promise<TokenPayload | Error> {
+export async function verifyJWTToken(secret: string, token: string): Promise<TokenPayload | Error> {
     try {
         return (await verify(token, secret, "HS256")) as TokenPayload;
     } catch {

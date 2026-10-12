@@ -13,7 +13,7 @@ const features = [
     },
     {
         title: "Tailored resumes",
-        text: "Generates a resume and cover letter customised to each job description.",
+        text: "Generates a resume and cover letter customized to each job description.",
     },
 ];
 
