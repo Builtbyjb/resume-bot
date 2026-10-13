@@ -2,8 +2,8 @@ import { TokenPayload } from "../lib/types";
 import { otpTemplate } from "../templates/utils";
 import { verify, sign } from "hono/jwt";
 
-export const TEMP_TOKEN_MAX_AGE = 600; // 10mins in secs
-export const ACCESS_TOKEN_MAX_AGE = 1000; // 30mins in secs
+export const TEMP_TOKEN_MAX_AGE = 600; // 10 mins in secs
+export const ACCESS_TOKEN_MAX_AGE = 900; // 15 mins in secs
 export const REFRESH_TOKEN_MAX_AGE = 7_776_000; // 90 days in secs
 
 export function generateOTP(): string {

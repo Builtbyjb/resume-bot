@@ -30,16 +30,3 @@ export type BaseTokenPayload = {
 };
 
 export type TokenPayload = JWTPayload & BaseTokenPayload;
-
-export class APIError extends Error {
-    public code: ContentfulStatusCode;
-
-    constructor(message: string, code: ContentfulStatusCode, options?: ErrorOptions) {
-        super(message, options);
-
-        this.code = code;
-        this.name = "APIError";
-
-        Object.setPrototypeOf(this, APIError.prototype);
-    }
-}

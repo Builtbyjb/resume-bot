@@ -1,16 +1,9 @@
 import { html } from "hono/html";
-import { HtmlEscapedString } from "hono/utils/html";
 import { css } from "hono/css";
-import RootLayout from "./root-layout";
-import { header, container, nav, footer } from "../style";
+import { RootLayout, type LayoutProps } from "./root-layout";
+import { header, container, nav, footer } from "../styles/style";
 
-type Props = {
-    title: string;
-    description: string;
-    content: HtmlEscapedString | Promise<HtmlEscapedString>;
-};
-
-export default function GuestLayout(props: Props) {
+export default function GuestLayout(props: LayoutProps) {
     const logo = css`
         font-family: "Space Mono";
         font-style: italic;
@@ -20,6 +13,7 @@ export default function GuestLayout(props: Props) {
     return RootLayout({
         title: props.title,
         description: props.description,
+        scriptPath: props.scriptPath,
         content: html`
             <header class="${header}">
                 <nav class="${container} ${nav}">

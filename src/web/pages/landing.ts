@@ -1,5 +1,5 @@
 import { html } from "hono/html";
-import { hero, container, actions, btn, btnPrimary, section, grid, card } from "../style";
+import { hero, container, actions, btn, btnPrimary, section, grid, card } from "../styles/style";
 import GuestLayout from "../layouts/guest-layout";
 
 const features = [

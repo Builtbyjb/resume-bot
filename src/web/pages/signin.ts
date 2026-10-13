@@ -1,6 +1,6 @@
 import { html } from "hono/html";
 import { css } from "hono/css";
-import { btn, btnPrimary, card, wrap, form } from "../style";
+import { btn, btnPrimary, card, wrap, form } from "../styles/style";
 import GuestLayout from "../layouts/guest-layout";
 
 export default function SigninPage() {
@@ -12,6 +12,7 @@ export default function SigninPage() {
     return GuestLayout({
         title: "Sign in - Job Bot",
         description: "Sign in to Job Bot",
+        scriptPath: "/signin.js",
         content: html`
             <div class="${wrap}">
                 <form id="signin-form" class="${card} ${form}">

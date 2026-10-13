@@ -8,10 +8,12 @@ import {
     getAccessTokenExp,
     getRefreshTokenExp,
     verifyJWTToken,
+    REFRESH_TOKEN_MAX_AGE,
 } from "@/api/helpers";
 import { BaseTokenPayload, TokenPayload } from "@/api/lib/types";
 import { AuthContext } from "./middleware";
-import { getCookie } from "hono/cookie";
+import { deleteCookie, getCookie } from "hono/cookie";
+import { HTTPException } from "hono/http-exception";
 
 export class AuthService {
     private readonly repo: AuthRepository;
@@ -20,7 +22,7 @@ export class AuthService {
         this.repo = authRepository;
     }
 
-    public async signin(c: Context<AuthContext>, email: string): Promise<string | Error> {
+    public async signin(c: Context<AuthContext>, email: string): Promise<string> {
         // Save user credentials if not exist
         let user = await this.repo.findUserByEmail(email);
         if (!user) user = await this.repo.createUser(email);
@@ -28,7 +30,7 @@ export class AuthService {
         const otp = generateOTP();
 
         const error = await sendOTPEmail(c.env.OTP_EMAIL, user.email, otp, c.env.SEND_EMAIL.send);
-        if (error) throw error;
+        if (error) throw new HTTPException(500, { message: error.message });
 
         // Create temp token payload
         const payload = {
@@ -47,15 +49,17 @@ export class AuthService {
     public async validateOTP(
         c: Context<AuthContext>,
         otp: string,
-    ): Promise<{ accessToken: string; email: string } | Error> {
+    ): Promise<{ accessToken: string; email: string }> {
         const tempToken = getCookie(c, "temp_token");
-        if (!tempToken) return new Error("Not Authorized");
+        if (!tempToken) throw new Error("Not Authorized");
 
         const verifiedPayload = await verifyJWTToken(c.env.JWT_SECRET, tempToken);
-        if (verifiedPayload instanceof Error) throw verifiedPayload;
+        if (verifiedPayload instanceof Error) {
+            throw new HTTPException(500, { message: verifiedPayload.message });
+        }
 
-        if (!verifiedPayload.otp) return new Error("OTP not found");
-        if (verifiedPayload.otp !== otp) return new Error("Invalid OTP");
+        if (!verifiedPayload.otp) throw new HTTPException(400, { message: "OTP not found" });
+        if (verifiedPayload.otp !== otp) throw new HTTPException(400, { message: "Invalid OTP" });
 
         const basePayload = {
             userID: verifiedPayload.userID,
@@ -79,17 +83,31 @@ export class AuthService {
         const refreshToken = await signJWTToken(c.env.JWT_SECRET, refreshPayload);
 
         // Store refresh token in KV store
-        await c.env.KV.put(`${verifiedPayload.userID}:refresh_token`, refreshToken);
+        await c.env.KV.put(`${verifiedPayload.userID}:refresh_token`, refreshToken, {
+            expirationTtl: REFRESH_TOKEN_MAX_AGE,
+        });
 
         return { accessToken, email: verifiedPayload.email };
     }
 
     public async signout(c: Context<AuthContext>) {
         const accessToken = getCookie(c, "access_token");
-        if (!accessToken) throw new Error("Not authorized");
+        if (!accessToken) {
+            deleteCookie(c, "access_token", {
+                path: "/",
+                domain: c.env.DOMAIN_NAME,
+            });
+            return;
+        }
 
         const verifiedPayload = await verifyJWTToken(c.env.JWT_SECRET, accessToken);
-        if (verifiedPayload instanceof Error) throw verifiedPayload;
+        if (verifiedPayload instanceof Error) {
+            deleteCookie(c, "access_token", {
+                path: "/",
+                domain: c.env.DOMAIN_NAME,
+            });
+            return;
+        }
 
         await c.env.KV.delete(`${verifiedPayload.userID}:refresh_token`);
     }

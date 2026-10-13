@@ -1,14 +1,5 @@
-async function handlePost(url, body) {
-    return await fetch(url, {
-        method: "POST",
-        credentials: "same-origin",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-    });
-}
-
 /* Login form */
-document.getElementById("signin-form").addEventListener("submit", async (e) => {
+document.getElementById("signin-form")?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const props = Object.fromEntries(formData);
@@ -22,7 +13,7 @@ document.getElementById("signin-form").addEventListener("submit", async (e) => {
 });
 
 /* OTP form */
-document.getElementById("otp-form").addEventListener("submit", async (e) => {
+document.getElementById("otp-form")?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
