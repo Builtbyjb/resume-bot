@@ -1,0 +1,208 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "job-bot",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-06",
+  "assets": {
+    "directory": "../web/dist",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"],
+  },
+  "observability": {
+    "enabled": true,
+  },
+  "upload_source_maps": true,
+  /**
+   * Smart Placement
+   * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
+   */
+  // "placement": {  "mode": "smart" }
+  /**
+   * Bindings
+   * Bindings allow your Worker to interact with resources on the Cloudflare Developer Platform, including
+   * databases, object storage, AI inference, real-time communication and more.
+   * https://developers.cloudflare.com/workers/runtime-apis/bindings/
+   */
+  /**
+   * Environment Variables
+   * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
+   * Note: Use secrets to store sensitive data.
+   * https://developers.cloudflare.com/workers/configuration/secrets/
+   */
+  // "vars": {  "MY_VARIABLE": "production_value" }
+  /**
+   * Service Bindings (communicate between multiple Workers)
+   * https://developers.cloudflare.com/workers/wrangler/configuration/#service-bindings
+   */
+  // "services": [  {   "binding": "MY_SERVICE",   "service": "my-service"  } ]
+  "env": {
+    /************************************************/
+    /******* Production Environment *****************/
+    /************************************************/
+    "production": {
+      "name": "job-bot-production",
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "job-bot-production",
+          "database_id": "ac985793-7ad0-457e-871f-5ea88d3cc8ba",
+        },
+      ],
+      "r2_buckets": [
+        {
+          "binding": "R2",
+          "bucket_name": "job-bot-r2-bucket",
+        },
+      ],
+      "send_email": [
+        {
+          "name": "SEND_EMAIL",
+        },
+      ],
+      "triggers": {
+        "crons": ["* * * * *", "0 0 1 * *"],
+      },
+      "ratelimits": [
+        {
+          "name": "RATE_LIMITER",
+          "namespace_id": "1001",
+          "simple": {
+            // 60 requests per minute
+            "limit": 60,
+            "period": 60,
+          },
+        },
+      ],
+      "kv_namespaces": [
+        {
+          "binding": "KV",
+          "id": "<PLACEHOLDER_PRODUCTION_KV_ID>",
+          "preview_id": "<PLACEHOLDER_PREVIEW_KV_ID>",
+        },
+      ],
+    },
+    /************************************************/
+    /******* Staging Environment ********************/
+    /************************************************/
+    "staging": {
+      "name": "job-bot-staging",
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "job-bot-dev",
+          "database_id": "<unique-ID-for-your-database>",
+        },
+      ],
+      "r2_buckets": [
+        {
+          "binding": "R2",
+          "bucket_name": "job-bot-r2-bucket",
+        },
+      ],
+      "send_email": [
+        {
+          "name": "SEND_EMAIL",
+        },
+      ],
+      "triggers": {
+        "crons": ["* * * * *", "0 0 1 * *"],
+      },
+      "ratelimits": [
+        {
+          "name": "RATE_LIMITER",
+          "namespace_id": "1001",
+          "simple": {
+            // 60 requests per minute
+            "limit": 60,
+            "period": 60,
+          },
+        },
+      ],
+      "kv_namespaces": [
+        {
+          "binding": "KV",
+          "id": "<PLACEHOLDER_DEV_KV_ID>",
+          "preview_id": "<PLACEHOLDER_PREVIEW_KV_ID>",
+        },
+      ],
+    },
+    /************************************************/
+    /******* Development Environment ****************/
+    /************************************************/
+    "dev": {
+      "name": "job-bot-dev",
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "job-bot-dev",
+          "database_id": "<unique-ID-for-your-database>",
+          "migrations_dir": "drizzle",
+          "migrations_pattern": "drizzle/*/migration.sql",
+        },
+      ],
+      "r2_buckets": [
+        {
+          "binding": "R2",
+          "bucket_name": "job-bot-r2-bucket",
+        },
+      ],
+      "send_email": [
+        {
+          "name": "SEND_EMAIL",
+        },
+      ],
+      "triggers": {
+        "crons": ["* * * * *", "0 0 1 * *"],
+      },
+      "ratelimits": [
+        {
+          "name": "RATE_LIMITER",
+          "namespace_id": "1001",
+          "simple": {
+            // 60 requests per minute
+            "limit": 60,
+            "period": 60,
+          },
+        },
+      ],
+      "kv_namespaces": [
+        {
+          "binding": "KV",
+          "id": "<PLACEHOLDER_DEV_KV_ID>",
+          "preview_id": "<PLACEHOLDER_PREVIEW_KV_ID>",
+        },
+      ],
+    },
+  },
+  "rules": [
+    {
+      "type": "Text",
+      "globs": ["**/*.html"],
+      "fallthrough": true,
+    },
+  ],
+
+  // "vars": {
+  //   "MY_VAR": "my-variable"
+  // },
+  // "kv_namespaces": [
+  //   {
+  //     "binding": "MY_KV_NAMESPACE",
+  //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  //   }
+  // ],
+  // "d1_databases": [
+  //   {
+  //     "binding": "DB",
+  //     "database_name": "my-database",
+  //     "database_id": "",
+  //   },
+  // ],
+  // "ai": {
+  //   "binding": "AI"
+  // },
+}

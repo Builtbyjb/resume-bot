@@ -1,22 +1,20 @@
 {
-  "name": "resume-bot",
+  "name": "job-bot",
+  "private": true,
   "type": "module",
+  "packageManager": "bun@1.4.3",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "wrangler dev --env dev",
-    "deploy": "wrangler deploy --env production --minify",
-    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
-  },
-  "dependencies": {
-    "@hono/zod-validator": "^0.9.1",
-    "dotenv": "^18.0.7",
-    "drizzle-orm": "^1.0.0-rc.4",
-    "hono": "^4.13.13",
-    "zod": "^4.6.6"
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "deploy": "turbo run deploy"
   },
   "devDependencies": {
-    "@types/node": "^26.6.5",
-    "drizzle-kit": "^1.0.0-rc.4",
-    "tsx": "^4.23.15",
-    "wrangler": "^4.149.0"
+    "turbo": "^2.11.8"
   }
 }
