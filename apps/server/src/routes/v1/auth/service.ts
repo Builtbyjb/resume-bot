@@ -1,19 +1,19 @@
 import { AuthRepository } from "./repository";
 import type { Context } from "hono";
 import {
-    generateOTP,
+    generateRandomAlphanumericString,
     sendOTPEmail,
-    signJWTToken,
     getTempTokenExp,
     getAccessTokenExp,
     getRefreshTokenExp,
     verifyJWTToken,
     REFRESH_TOKEN_MAX_AGE,
-} from "../../../helpers";
-import { BaseTokenPayload, TokenPayload } from "../../../lib/types";
+} from "@/helpers";
+import { BaseTokenPayload, TokenPayload } from "@/lib/types";
 import { AuthContext } from "./middleware";
 import { getCookie } from "hono/cookie";
 import { HTTPException } from "hono/http-exception";
+import { sign } from "hono/jwt";
 
 export class AuthService {
     private readonly repo: AuthRepository;
@@ -27,7 +27,7 @@ export class AuthService {
         let user = await this.repo.findUserByEmail(email);
         if (!user) user = await this.repo.createUser(email);
 
-        const otp = generateOTP();
+        const otp = generateRandomAlphanumericString(8);
 
         const error = await sendOTPEmail(c.env.OTP_EMAIL, user.email, otp, c.env.SEND_EMAIL.send);
         if (error) throw new HTTPException(500, { message: error.message });
@@ -41,7 +41,7 @@ export class AuthService {
         } as TokenPayload;
 
         // Sign temp token payload
-        const signResult = await signJWTToken(c.env.JWT_SECRET, payload);
+        const signResult = await sign(payload, c.env.JWT_SECRET);
 
         return signResult;
     }
@@ -72,7 +72,7 @@ export class AuthService {
         } as TokenPayload;
 
         // Generate access token
-        const accessToken = await signJWTToken(c.env.JWT_SECRET, accessPayload);
+        const accessToken = await sign(accessPayload, c.env.JWT_SECRET);
 
         const refreshPayload = {
             ...basePayload,
@@ -80,7 +80,7 @@ export class AuthService {
         };
 
         // Generate refresh token
-        const refreshToken = await signJWTToken(c.env.JWT_SECRET, refreshPayload);
+        const refreshToken = await sign(refreshPayload, c.env.JWT_SECRET);
 
         // Store refresh token in KV store
         await c.env.KV.put(`${verifiedPayload.userID}:refresh_token`, refreshToken, {

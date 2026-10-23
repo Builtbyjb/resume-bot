@@ -1,6 +1,6 @@
 import { ContentfulStatusCode } from "hono/utils/http-status";
 import { JWTPayload } from "hono/utils/jwt/types";
-import { users } from "../db/schema";
+import { users } from "../../db/schema";
 
 export type User = typeof users.$inferSelect;
 

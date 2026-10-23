@@ -6,14 +6,28 @@ export const TEMP_TOKEN_MAX_AGE = 600; // 10 mins in secs
 export const ACCESS_TOKEN_MAX_AGE = 900; // 15 mins in secs
 export const REFRESH_TOKEN_MAX_AGE = 7_776_000; // 90 days in secs
 
-export function generateOTP(): string {
-    const bytes = new Uint8Array(4);
+/**
+ * Generates a random alphanumeric string
+ * @param length - required length of the string
+ * @returns
+ */
+export function generateRandomAlphanumericString(length: number): string {
+    const bytes = new Uint8Array(length);
     crypto.getRandomValues(bytes);
     return Array.from(bytes)
         .map((b) => b.toString(16).padStart(2, "0"))
-        .join("");
+        .join("")
+        .slice(0, length);
 }
 
+/**
+ * Sends an OTP email to the specified email address using the provided send function.
+ * @param senderEmail
+ * @param email - user email address
+ * @param otp - generate one time password
+ * @param sendFn - from cloudflare email bindings
+ * @returns
+ */
 export async function sendOTPEmail(
     senderEmail: string,
     email: string,
@@ -56,10 +70,6 @@ export function getAccessTokenExp() {
 
 export function getRefreshTokenExp() {
     return Math.floor(Date.now() / 1000) + REFRESH_TOKEN_MAX_AGE;
-}
-
-export async function signJWTToken(secret: string, payload: TokenPayload): Promise<string> {
-    return await sign(payload, secret);
 }
 
 export function getTokenFromHeader(authHeader: string): string {

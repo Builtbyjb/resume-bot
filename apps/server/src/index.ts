@@ -1,11 +1,13 @@
 import { Hono } from "hono";
-import apiRoutesV1 from "./api/routes/v1";
-import { ENV } from "./api/lib/types";
+import apiRoutesV1 from "./routes/v1";
+import notFound from "./routes/v1/notFound";
+import { ENV } from "@/lib/types";
 import { HTTPException } from "hono/http-exception";
-import { INTERNAL_ERROR_MESSAGE } from "./api/lib/constants";
+import { INTERNAL_ERROR_MESSAGE } from "@/lib/constants";
 
 const app = new Hono<{ Bindings: ENV }>();
 
+app.route("*", notFound);
 app.route("/api", apiRoutesV1);
 
 app.onError((error, c) => {

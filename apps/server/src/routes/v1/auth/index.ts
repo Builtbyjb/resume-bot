@@ -3,8 +3,8 @@ import { zValidator } from "@hono/zod-validator";
 import { loginSchema, otpSchema } from "@resume-bot/shared";
 import { deleteCookie, setCookie } from "hono/cookie";
 import { AuthContext, injectService } from "./middleware";
-import { TEMP_TOKEN_MAX_AGE } from "../../../helpers";
-import { authMiddleware } from "../../../middleware/auth";
+import { TEMP_TOKEN_MAX_AGE } from "@/helpers";
+import { authMiddleware } from "@/middleware/auth";
 
 const authRouteV1 = new Hono<AuthContext>();
 authRouteV1.use("*", injectService());

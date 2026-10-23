@@ -1,5 +1,5 @@
-import { users } from "../../../db/schema";
-import { User } from "../../../lib/types";
+import { users } from "@/db/schema";
+import { User } from "@/lib/types";
 import { DrizzleD1Database } from "drizzle-orm/d1";
 import { and, eq } from "drizzle-orm";
 
