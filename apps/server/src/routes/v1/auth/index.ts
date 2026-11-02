@@ -6,7 +6,7 @@ import { AuthContext, injectService } from "./middleware";
 import { TEMP_TOKEN_MAX_AGE } from "@/helpers";
 import { authMiddleware } from "@/middleware/auth";
 
-const authRouteV1 = new Hono<AuthContext>();
+const authRouteV1 = new Hono<AuthContext>()
 authRouteV1.use("*", injectService());
 
 authRouteV1.post("/signin", zValidator("json", loginSchema), async (c) => {

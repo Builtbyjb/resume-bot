@@ -90,7 +90,7 @@ export class AuthService {
         return { accessToken, email: verifiedPayload.email };
     }
 
-    /** Revokes the refresh token. The route clears the access token cookie. */
+    /* Revokes the refresh token. The route clears the access token cookie. */
     public async signout(c: Context<AuthContext>) {
         const accessToken = getCookie(c, "access_token");
         if (!accessToken) return;

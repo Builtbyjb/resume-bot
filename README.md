@@ -1,3 +1,3 @@
 # Job Bot
 
-Automatic job research an applications
+Automatic job research and applications

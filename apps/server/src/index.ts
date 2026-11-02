@@ -7,8 +7,9 @@ import { INTERNAL_ERROR_MESSAGE } from "@/lib/constants";
 
 const app = new Hono<{ Bindings: ENV }>();
 
+app.route("/api/v1", apiRoutesV1);
+
 app.route("*", notFound);
-app.route("/api", apiRoutesV1);
 
 app.onError((error, c) => {
     console.error(`${error.message}: ${error.stack}: ${error.cause}`);

@@ -1,6 +1,6 @@
 import { MiddlewareHandler } from "hono";
 import { drizzle } from "drizzle-orm/d1";
-import { ENV } from "../../../lib/types";
+import { ENV } from "@/lib/types";
 import { AuthRepository } from "./repository";
 import { AuthService } from "./service";
 
@@ -20,4 +20,3 @@ export function injectService(): MiddlewareHandler<AuthContext> {
         await next();
     };
 }
-export function 

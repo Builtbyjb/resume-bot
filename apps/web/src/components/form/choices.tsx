@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import { SettingLabel } from "@/components/ui/card";
+// import { SettingLabel } from "@/components/ui/card";
 import { cx } from "@/lib/cx";
-import { useFieldContext } from "@/lib/form-context";
+import { useFieldContext } from "@/components/form/form-context";
 
 type Option<T extends string> = { value: T; label: string };
 
@@ -16,7 +16,7 @@ export function Switch({ id }: { id: string }) {
       checked={field.state.value}
       onChange={(e) => field.handleChange(e.target.checked)}
       onBlur={field.handleBlur}
-      className="relative m-0 h-6 w-[42px] shrink-0 cursor-pointer appearance-none rounded-full bg-muted/20 transition-[background-color] duration-200 before:absolute before:top-[3px] before:left-[3px] before:size-[18px] before:rounded-full before:bg-white before:transition-transform before:duration-200 before:content-[''] checked:bg-accent checked:before:translate-x-[18px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      className="relative m-0 h-6 w-10.5 shrink-0 cursor-pointer appearance-none rounded-full bg-muted/20 transition-[background-color] duration-200 before:absolute before:top-[3px] before:left-[3px] before:size-[18px] before:rounded-full before:bg-white before:transition-transform before:duration-200 before:content-[''] checked:bg-accent checked:before:translate-x-[18px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
     />
   );
 }
@@ -120,11 +120,11 @@ export function RadioCards<T extends string>({
             onBlur={field.handleBlur}
             className="mx-0 mt-[0.3rem] mb-0 accent-accent"
           />
-          <SettingLabel
+          {/*<SettingLabel
             as="span"
             title={option.label}
             description={option.description}
-          />
+          />*/}
         </label>
       ))}
     </div>
@@ -142,7 +142,7 @@ export function YesNo({ labelId }: { labelId: string }) {
     <div
       role="radiogroup"
       aria-labelledby={labelId}
-      className="inline-flex self-start overflow-hidden rounded-[10px] border border-muted/25"
+      className="inline-flex self-start overflow-hidden rounded-lg border border-muted/25"
     >
       {choices.map((choice) => (
         <label

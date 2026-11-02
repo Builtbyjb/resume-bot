@@ -12,14 +12,3 @@ export function safeUrl(url: string) {
         return null;
     }
 }
-
-/** Reads the first message out of TanStack Form / Standard Schema errors. */
-export function firstError(errors: unknown[]): string | null {
-    for (const error of errors) {
-        if (typeof error === "string" && error) return error;
-        if (error && typeof error === "object" && "message" in error) {
-            return String(error.message);
-        }
-    }
-    return null;
-}

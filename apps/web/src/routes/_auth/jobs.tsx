@@ -1,20 +1,80 @@
+import { useRef, useState } from "react";
+import { type Job, jobsSchema } from "@resume-bot/shared";
 import { createFileRoute } from "@tanstack/react-router";
-import { mockJobs } from "@/data/mock-jobs";
-import { JobsPage } from "@/features/jobs/jobs-page";
+import { X } from "lucide-react"
+import JobsTable from "@/components/jobs/jobs-table";
+import JobDetail from "@/components/jobs/jobs-detail";
+import { handleFetch } from "@/lib/api";
 
 export const Route = createFileRoute("/_auth/jobs")({
-    head: () => ({
-        meta: [
-            { title: "Jobs - Job Bot" },
-            { name: "description", content: "List of all the jobs the bot applied to" },
-        ],
-    }),
-    // TODO: replace with the user's jobs from the API once the jobs endpoints exist
-    loader: () => ({ jobs: mockJobs }),
-    component: JobsRoute,
+  head: () => ({
+    meta: [
+      { title: "Jobs - Job Bot" },
+      { name: "description", content: "List of all the jobs the bot found" },
+    ],
+  }),
+  loader: async () => {
+    const response = await handleFetch({
+      path: "/jobs",
+      method: "GET",
+    })
+
+    const result = await response.json()
+    const parsedResult = jobsSchema.parse(result.data)
+
+    return { jobs: parsedResult }
+  },
+  component: JobsRoute,
 });
 
 function JobsRoute() {
-    const { jobs } = Route.useLoaderData();
-    return <JobsPage jobs={jobs} />;
+  const { jobs } = Route.useLoaderData();
+  const drawerRef = useRef<HTMLDialogElement>(null);
+  const [selected, setSelected] = useState<Job | null>(null);
+
+  const openJob = (job: Job) => {
+    setSelected(job);
+    const drawer = drawerRef.current;
+    if (drawer && !drawer.open) drawer.showModal();
+  };
+  return (
+    <>
+      <h1>Jobs</h1>
+
+      {jobs.length ? (
+        <JobsTable jobs={jobs} selectedId={selected?.id} onOpen={openJob} />
+      ) : (
+        <div className="rounded-xl border border-dashed border-muted/20 px-6 py-16 text-center text-muted">
+          <h2 className="mb-2 text-[1.25rem] text-text">No applications yet</h2>
+          <p className="text-[0.9rem] opacity-70">
+            Jobs will show up here as soon as the bot starts applying.
+          </p>
+        </div>
+      )}
+
+      <dialog
+        id="job-drawer"
+        ref={drawerRef}
+        aria-labelledby="job-drawer-title"
+        onClose={() => setSelected(null)}
+        // The dialog has no padding, so a click whose target is the dialog itself landed on the backdrop.
+        onClick={(e) => {
+          if (e.target === e.currentTarget) e.currentTarget.close();
+        }}
+        className="fixed inset-y-0 right-0 left-auto m-0 h-full max-h-none w-[min(500px,100vw)] max-w-[100vw] border-l border-muted/12 bg-bg p-0 text-text open:flex open:animate-drawer-in open:flex-col backdrop:animate-fade-in backdrop:bg-black/55 motion-reduce:open:animate-none motion-reduce:backdrop:animate-none"
+      >
+        <div className="flex justify-end px-3 pt-3">
+          <button
+            type="button"
+            onClick={() => drawerRef.current?.close()}
+          >
+            <X />
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto px-7 pt-1 pb-8">
+          {selected && <JobDetail key={selected.id} job={selected} />}
+        </div>
+      </dialog>
+    </>
+  );
 }

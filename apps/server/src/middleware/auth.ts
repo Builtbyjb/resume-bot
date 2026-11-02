@@ -1,11 +1,11 @@
 import { MiddlewareHandler } from "hono";
 import { ENV, TokenPayload } from "../lib/types";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
-import { decode, verify } from "hono/jwt";
+import { decode, verify, sign } from "hono/jwt";
 import { JwtTokenExpired, JwtTokenInvalid } from "hono/utils/jwt/types";
 import type { Context } from "hono";
 import { TokenHeader } from "hono/utils/jwt/jwt";
-import { getAccessTokenExp, signJWTToken } from "../helpers";
+import { getAccessTokenExp } from "../helpers";
 
 export interface AuthMiddlewareContext {
     Bindings: ENV;
@@ -42,7 +42,7 @@ async function refreshJWTToken(
             exp: getAccessTokenExp(),
         };
 
-        const newAccessToken = await signJWTToken(c.env.JWT_SECRET, accessPayload);
+        const newAccessToken = await sign(accessPayload, c.env.JWT_SECRET);
 
         return { newAccessToken, newPayload: accessPayload };
     } catch (error) {
