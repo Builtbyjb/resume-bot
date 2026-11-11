@@ -1,4 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 export const Route = createFileRoute("/_guest/")({
   head: () => ({
@@ -26,6 +28,7 @@ const features = [
 ];
 
 function LandingPage() {
+  const navigate = useNavigate()
   return (
     <>
       <section className="pt-28 pb-20 text-center">
@@ -38,9 +41,7 @@ function LandingPage() {
             applications for you.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
-            <Link to="/signin" >
-              Sign In
-            </Link>
+            <Button onClick={() => navigate({ to: "/signin" })}> Sign In </Button>
           </div>
         </div>
       </section>
@@ -49,10 +50,10 @@ function LandingPage() {
         <div >
           <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-5">
             {features.map((feature) => (
-              <div key={feature.title}>
+              <Card key={feature.title}>
                 <h3 className="mb-2 text-[1.15rem]">{feature.title}</h3>
                 <p className="text-[0.95rem] text-muted">{feature.text}</p>
-              </div>
+              </Card>
             ))}
           </div>
         </div>

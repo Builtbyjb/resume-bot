@@ -1,10 +1,12 @@
 import { useRef, useState } from "react";
 import { type Job, jobsSchema } from "@resume-bot/shared";
-import { createFileRoute } from "@tanstack/react-router";
-import { X } from "lucide-react"
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { TriangleAlert, X } from "lucide-react"
 import JobsTable from "@/components/jobs/jobs-table";
 import JobDetail from "@/components/jobs/jobs-detail";
 import { handleFetch } from "@/lib/api";
+import Header from "@/components/header";
+import Banner from "@/components/banner";
 
 export const Route = createFileRoute("/_auth/jobs")({
   head: () => ({
@@ -14,21 +16,26 @@ export const Route = createFileRoute("/_auth/jobs")({
     ],
   }),
   loader: async () => {
-    const response = await handleFetch({
-      path: "/jobs",
-      method: "GET",
-    })
+    const [response, profileResponse] = await Promise.all([
+      handleFetch({ path: "/jobs", method: "GET" }),
+      handleFetch({ path: "/profile", method: "GET" }),
+    ])
+
+    // handleFetch returns null on a 404, meaning the profile hasn't been created yet.
+    const hasProfile = profileResponse !== null
+
+    if (!response) return { jobs: [], hasProfile }
 
     const result = await response.json()
     const parsedResult = jobsSchema.parse(result.data)
 
-    return { jobs: parsedResult }
+    return { jobs: parsedResult, hasProfile }
   },
   component: JobsRoute,
 });
 
 function JobsRoute() {
-  const { jobs } = Route.useLoaderData();
+  const { jobs, hasProfile } = Route.useLoaderData();
   const drawerRef = useRef<HTMLDialogElement>(null);
   const [selected, setSelected] = useState<Job | null>(null);
 
@@ -39,7 +46,22 @@ function JobsRoute() {
   };
   return (
     <>
-      <h1>Jobs</h1>
+      {!hasProfile && (
+        <Banner
+          icon={<TriangleAlert />}
+          text={
+            <>
+              Your profile is incomplete.{" "}
+              <Link to="/profile" className="text-accent hover:underline">
+                Update your profile
+              </Link>{" "}
+              so the bot can tailor resumes and cover letters for you.
+            </>
+          }
+        />
+      )}
+
+      <Header title="Jobs" />
 
       {jobs.length ? (
         <JobsTable jobs={jobs} selectedId={selected?.id} onOpen={openJob} />

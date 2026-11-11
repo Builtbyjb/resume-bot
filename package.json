@@ -12,7 +12,8 @@
     "build": "turbo run build",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
-    "deploy": "turbo run deploy"
+    "deploy": "turbo run deploy",
+    "test-cron": "curl 'http://localhost:8787/cdn-cgi/local/scheduled?cron=0+8+*+*+*'"
   },
   "devDependencies": {
     "turbo": "^2.11.8"

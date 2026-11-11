@@ -1,8 +1,6 @@
-import { ContentfulStatusCode } from "hono/utils/http-status";
 import { JWTPayload } from "hono/utils/jwt/types";
-import { users } from "../../db/schema";
+import { profiles, settings, users } from "@/db/schema";
 
-export type User = typeof users.$inferSelect;
 
 export type ENV = {
     DB: D1Database;
@@ -21,6 +19,9 @@ export type ENV = {
     RATE_LIMITER: RateLimit;
     KV: KVNamespace;
     DOMAIN_NAME: string;
+    MODEL_API_KEY: string;
+    MODEL_BASE_URL: string;
+    MODEL_NAME: string;
 };
 
 export type BaseTokenPayload = {
@@ -30,3 +31,21 @@ export type BaseTokenPayload = {
 };
 
 export type TokenPayload = JWTPayload & BaseTokenPayload;
+
+export type WorkMode = "remote" | "hybrid" | "onsite"
+
+export type JobDetails = {
+    role: string | null,
+    jobBoards: unknown,
+    experiences: string | null,
+    salary: string | null,
+    workMode: WorkMode | null,
+    location: string | null,
+    radius: string | null // km,
+    lastPostedDate: string
+}
+
+/* DB Schema types */
+export type UserSchema = typeof users.$inferSelect;
+export type ProfileSchema = typeof profiles.$inferSelect;
+export type SettingSchema = typeof settings.$inferSelect;

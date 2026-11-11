@@ -15,7 +15,7 @@ type RequestOptions = {
     body?: unknown;
 };
 
-export async function handleFetch(options: RequestOptions): Promise<Response> {
+export async function handleFetch(options: RequestOptions): Promise<Response | null> {
     const isFormData = options.body instanceof FormData
 
     const response = await fetch(`/api/v1${options.path}`, {
@@ -31,6 +31,7 @@ export async function handleFetch(options: RequestOptions): Promise<Response> {
     });
 
     if (response.status === 401) throw new ApiError(response.status, "Unauthorized");
+    if (response.status === 404) return null
     if (!response.ok) throw new ApiError(response.status, "Request failed");
 
     return response

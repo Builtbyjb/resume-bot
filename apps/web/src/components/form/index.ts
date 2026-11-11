@@ -1,7 +1,7 @@
 import { createFormHook } from "@tanstack/react-form";
 // import { Checkbox, ChipGroup, RadioCards, Switch, YesNo } from "@/components/form/choices";
 import {
-    // DateInput,
+    DateField,
     // FieldError,
     // LinesTextArea,
     // MonthField,
@@ -24,7 +24,7 @@ export const { useAppForm, withForm } = createFormHook({
     fieldComponents: {
         // Checkbox,
         // ChipGroup,
-        // DateInput,
+        DateField,
         // FieldError,
         // LinesTextArea,
         // MonthField,

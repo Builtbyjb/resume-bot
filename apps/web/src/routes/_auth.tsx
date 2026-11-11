@@ -6,8 +6,6 @@ import {
   useNavigate,
   type LinkProps,
 } from "@tanstack/react-router";
-// import { useToast } from "@/components/ui/toast-context";
-// import { signout } from "@/lib/auth";
 import { BriefcaseBusiness, User, Settings, Receipt, MessageSquareQuote } from "lucide-react";
 import { type Feature } from "@/lib/features";
 
@@ -68,12 +66,12 @@ function AuthLayout() {
 
 function SignOutButton() {
   const navigate = useNavigate();
-  // const showToast = useToast();
   const [signingOut, setSigningOut] = useState(false);
 
   const handleSignOut = async () => {
     setSigningOut(true);
     try {
+      // TODO: Complete signout button
       // await signout();
       await navigate({ to: "/signin" });
     } catch {

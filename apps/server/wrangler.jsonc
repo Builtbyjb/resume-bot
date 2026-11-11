@@ -64,7 +64,10 @@
         },
       ],
       "triggers": {
-        "crons": ["* * * * *", "0 0 1 * *"],
+        // * * * * * -	Every minute
+        // 0 0 1 * * -	Midnight on the 1st of every month
+        // 0 8 * * * -	Every day at 8:00 AM
+        "crons": ["* * * * *", "0 0 1 * *", "0 8 * * *"],
       },
       "ratelimits": [
         {
@@ -139,9 +142,9 @@
         {
           "binding": "DB",
           "database_name": "job-bot-dev",
-          "database_id": "<unique-ID-for-your-database>",
+          "database_id": "ac985793-7ad0-457e-871f-5ea88d3cc8ba",
           "migrations_dir": "drizzle",
-          "migrations_pattern": "drizzle/*/migration.sql",
+          "migrations_pattern": "drizzle/**/*.sql",
         },
       ],
       "r2_buckets": [
@@ -156,7 +159,10 @@
         },
       ],
       "triggers": {
-        "crons": ["* * * * *", "0 0 1 * *"],
+        // * * * * * -	Every minute
+        // 0 0 1 * * -	Midnight on the 1st of every month
+        // 0 8 * * * -	Every day at 8:00 AM
+        "crons": ["* * * * *", "0 0 1 * *", "0 8 * * *"],
       },
       "ratelimits": [
         {

@@ -72,23 +72,6 @@ export function MonthInput({ className, ...props }: InputProps) {
   );
 }
 
-/** A date input whose empty value is `null`. */
-export function DateInput({ className, ...props }: InputProps) {
-  const field = useFieldContext<string | null>();
-  return (
-    <input
-      type="date"
-      name={field.name}
-      // className={cx(fieldInputClass, className)}
-      value={field.state.value ?? ""}
-      onChange={(e) => field.handleChange(e.target.value || null)}
-      onBlur={field.handleBlur}
-      aria-invalid={useInvalid()}
-      {...props}
-    />
-  );
-}
-
 export function TextArea({ className, ...props }: TextAreaProps) {
   const field = useFieldContext<string>();
   return (

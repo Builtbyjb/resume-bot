@@ -3,6 +3,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { loginSchema, otpSchema } from "@resume-bot/shared";
 import { ApiError, handleFetch } from "@/lib/api";
 import { useAppForm } from "@/components/form";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_guest/signin")({
   head: () => ({
@@ -51,6 +53,8 @@ function SigninPage() {
           body: value
         })
 
+        if (!response) return
+
         const result = await response.json()
         // TODO: Zod validation for result
         localStorage.setItem("userData", result.userData)
@@ -62,8 +66,8 @@ function SigninPage() {
   });
 
   return (
-    <div className="w-150 mx-auto">
-      <div>
+    <div className="w-150 mx-auto mt-8">
+      <Card>
         <h1 className="font-mono text-[1.6rem] italic">Welcome back</h1>
 
         <form className="mb-2" onSubmit={(e) => {
@@ -74,7 +78,7 @@ function SigninPage() {
           <div className="mb-2">
             <signinForm.AppField name="email" children={(field) => <field.TextField label="Email" />} />
           </div>
-          <button type="submit" disabled={isSubmitting}> Get OTP </button>
+          <Button variant={"link"} type="submit" disabled={isSubmitting}> Get OTP </Button>
           {signinError && (
             <p role="alert" className="text-[0.875rem] text-danger">
               {signinError}
@@ -93,14 +97,14 @@ function SigninPage() {
               children={(field) => <field.TextField label="OTP - One Time Password" disabled={!otpSent} />}
             />
           </div>
-          <button type="submit" disabled={isSubmitting}> Sign In </button>
+          <Button type="submit" disabled={isSubmitting}> Sign In </Button>
           {otpError && (
             <p role="alert" className="text-[0.875rem] text-danger">
               {otpError}
             </p>
           )}
         </form>
-      </div >
+      </Card >
     </div >
   );
 }

@@ -1,5 +1,5 @@
 import { users } from "@/db/schema";
-import { User } from "@/lib/types";
+import { UserSchema } from "@/lib/types";
 import { DrizzleD1Database } from "drizzle-orm/d1";
 import { and, eq } from "drizzle-orm";
 
@@ -10,7 +10,7 @@ export class AuthRepository {
         this.db = drizzleDB;
     }
 
-    public async createUser(email: string): Promise<User> {
+    public async createUser(email: string): Promise<UserSchema> {
         const user = await this.db
             .insert(users)
             .values({ email: email })
@@ -19,7 +19,7 @@ export class AuthRepository {
 
         return user;
     }
-    public async findUserByEmail(email: string): Promise<User> {
+    public async findUserByEmail(email: string): Promise<UserSchema> {
         const user = this.db
             .select()
             .from(users)

@@ -87,6 +87,8 @@ export function authMiddleware(): MiddlewareHandler<AuthMiddlewareContext> {
                         sameSite: "Strict",
                     });
 
+                    console.log("New token generated")
+
                     await next();
                 } catch (error) {
                     console.log(error);
